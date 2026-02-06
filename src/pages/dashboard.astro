@@ -1,0 +1,692 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Dashboard | Mio Auto Chat">
+    <div class="dashboard">
+        <!-- Server Sidebar -->
+        <aside class="server-sidebar" id="server-sidebar">
+            <div class="server-icon home active" data-tooltip="Home">
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    width="28"
+                    height="28"
+                >
+                    <path d="M12 3L4 9v12h5v-7h6v7h5V9z"></path>
+                </svg>
+            </div>
+            <div class="separator"></div>
+            <div id="guild-list"></div>
+        </aside>
+
+        <!-- Channel Sidebar -->
+        <aside class="channel-sidebar" id="channel-sidebar">
+            <div class="server-header">
+                <h2 id="server-name">Select a Server</h2>
+                <button class="dropdown-btn">▼</button>
+            </div>
+            <div class="channel-header">TEXT CHANNELS</div>
+            <div class="channel-list" id="channel-list">
+                <p class="no-channels">No channels available</p>
+            </div>
+            <div class="user-panel">
+                <div class="user-info">
+                    <div class="avatar bot-avatar" id="bot-avatar"></div>
+                    <div class="user-details">
+                        <span class="username" id="bot-name">Mio Bot</span>
+                        <span class="status">🟢 Online</span>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logout-btn" title="Logout">
+                    <svg
+                        viewBox="0 0 24 24"
+                        width="20"
+                        height="20"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"
+                        ></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-main">
+            <header class="chat-header">
+                <div class="channel-info">
+                    <span class="hash">#</span>
+                    <span id="current-channel-name">general</span>
+                </div>
+                <div class="header-tools">
+                    <span class="connection-status" id="ws-status"
+                        >🔴 Disconnected</span
+                    >
+                    <button
+                        class="header-logout-btn"
+                        id="header-logout-btn"
+                        title="Logout"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            width="18"
+                            height="18"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"
+                            ></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="messages-container" id="messages-container">
+                <div class="welcome-message">
+                    <h2>🎵 Welcome to Mio Auto Chat</h2>
+                    <p>Select a server and channel to start viewing messages</p>
+                </div>
+            </div>
+
+            <!-- Message Input -->
+            <div class="message-input-container">
+                <!-- Image Preview -->
+                <div
+                    class="image-preview-container hidden"
+                    id="image-preview-container"
+                >
+                    <div class="image-preview">
+                        <img id="image-preview" src="" alt="Preview" />
+                        <button
+                            class="remove-image-btn"
+                            id="remove-image-btn"
+                            title="Hapus gambar">✕</button
+                        >
+                    </div>
+                    <span class="image-name" id="image-name"></span>
+                </div>
+
+                <div class="input-wrapper">
+                    <input
+                        type="file"
+                        id="file-input"
+                        accept="image/*"
+                        hidden
+                    />
+                    <button
+                        class="attach-btn"
+                        id="attach-btn"
+                        title="Kirim gambar"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            width="24"
+                            height="24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <rect
+                                x="3"
+                                y="3"
+                                width="18"
+                                height="18"
+                                rx="2"
+                                ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </button>
+                    <input
+                        type="text"
+                        id="message-input"
+                        placeholder="Pilih channel untuk mengirim pesan..."
+                        disabled
+                    />
+                    <div class="input-tools">
+                        <button class="emoji-btn" title="Emoji">😊</button>
+                        <button
+                            class="mention-btn"
+                            id="mention-btn"
+                            title="Mention">@</button
+                        >
+                        <button
+                            class="send-btn"
+                            id="send-btn"
+                            title="Send Message"
+                            disabled>➤</button
+                        >
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Members Sidebar -->
+        <aside class="members-sidebar" id="members-sidebar">
+            <div class="members-header">Members</div>
+            <div class="members-list" id="members-list"></div>
+        </aside>
+
+        <!-- Mention Popup -->
+        <div class="mention-popup hidden" id="mention-popup">
+            <div class="mention-section">
+                <h4>Quick Mentions</h4>
+                <button class="mention-item everyone">@everyone</button>
+                <button class="mention-item here">@here</button>
+            </div>
+            <div class="mention-section" id="roles-section">
+                <h4>Roles</h4>
+            </div>
+            <div class="mention-section" id="users-section">
+                <h4>Users</h4>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<script>
+    // Check auth
+    if (localStorage.getItem("mio_auth") !== "true") {
+        window.location.href = "/";
+    }
+
+    // WebSocket connection
+    let ws: WebSocket | null = null;
+    let currentGuildId: string | null = null;
+    let currentChannelId: string | null = null;
+    let roles: any[] = [];
+    let members: any[] = [];
+
+    function connect() {
+        ws = new WebSocket("ws://localhost:8080");
+
+        ws.onopen = () => {
+            updateStatus(true);
+            ws?.send(JSON.stringify({ type: "GET_GUILDS" }));
+            ws?.send(JSON.stringify({ type: "GET_BOT_INFO" }));
+        };
+
+        ws.onmessage = (event) => {
+            const msg = JSON.parse(event.data);
+            handleMessage(msg);
+        };
+
+        ws.onclose = () => {
+            updateStatus(false);
+            setTimeout(connect, 3000);
+        };
+    }
+
+    function updateStatus(connected: boolean) {
+        const el = document.getElementById("ws-status");
+        if (el) el.innerHTML = connected ? "🟢 Connected" : "🔴 Disconnected";
+    }
+
+    function handleMessage(msg: any) {
+        switch (msg.type) {
+            case "GUILDS":
+                renderGuilds(msg.data);
+                break;
+            case "CHANNELS":
+                renderChannels(msg.data);
+                break;
+            case "MESSAGES":
+                renderMessages(msg.data);
+                break;
+            case "NEW_MESSAGE":
+                addMessage(msg.data);
+                break;
+            case "ROLES":
+                roles = msg.data;
+                renderRoles();
+                break;
+            case "MEMBERS":
+                members = msg.data.members;
+                renderMembers(msg.data);
+                break;
+            case "BOT_INFO":
+                updateBotInfo(msg.data);
+                break;
+            case "MESSAGE_SENT":
+                console.log("✅ Message sent successfully");
+                break;
+            case "ERROR":
+                console.error("❌ Error:", msg.message);
+                showNotification(msg.message, "error");
+                break;
+        }
+    }
+
+    function renderGuilds(guilds: any[]) {
+        const container = document.getElementById("guild-list");
+        if (!container) return;
+        container.innerHTML = guilds
+            .map(
+                (g) => `
+			<div class="server-icon" data-guild="${g.id}" data-tooltip="${g.name}">
+				${g.icon ? `<img src="${g.icon}" alt="${g.name}"/>` : g.name.charAt(0)}
+			</div>
+		`,
+            )
+            .join("");
+
+        container.querySelectorAll(".server-icon").forEach((el) => {
+            el.addEventListener("click", () =>
+                selectGuild((el as HTMLElement).dataset.guild!),
+            );
+        });
+    }
+
+    function selectGuild(guildId: string) {
+        currentGuildId = guildId;
+        document
+            .querySelectorAll(".server-icon")
+            .forEach((el) => el.classList.remove("active"));
+        document
+            .querySelector(`[data-guild="${guildId}"]`)
+            ?.classList.add("active");
+
+        ws?.send(JSON.stringify({ type: "GET_CHANNELS", guildId }));
+        ws?.send(JSON.stringify({ type: "GET_ROLES", guildId }));
+        ws?.send(JSON.stringify({ type: "GET_MEMBERS", guildId }));
+    }
+
+    function renderChannels(channels: any[]) {
+        const container = document.getElementById("channel-list");
+        if (!container) return;
+
+        const textChannels = channels.filter((c) => c.type === "text");
+        container.innerHTML = textChannels
+            .map(
+                (ch) => `
+			<div class="channel-item" data-channel="${ch.id}">
+				<span class="channel-hash">#</span>
+				<span class="channel-name">${ch.name}</span>
+			</div>
+		`,
+            )
+            .join("");
+
+        container.querySelectorAll(".channel-item").forEach((el) => {
+            el.addEventListener("click", () =>
+                selectChannel(
+                    (el as HTMLElement).dataset.channel!,
+                    el.querySelector(".channel-name")?.textContent || "",
+                ),
+            );
+        });
+    }
+
+    function selectChannel(channelId: string, name: string) {
+        currentChannelId = channelId;
+        document
+            .querySelectorAll(".channel-item")
+            .forEach((el) => el.classList.remove("active"));
+        document
+            .querySelector(`[data-channel="${channelId}"]`)
+            ?.classList.add("active");
+
+        const nameEl = document.getElementById("current-channel-name");
+        const input = document.getElementById(
+            "message-input",
+        ) as HTMLInputElement;
+        const sendBtn = document.getElementById(
+            "send-btn",
+        ) as HTMLButtonElement;
+
+        if (nameEl) nameEl.textContent = name;
+        if (input) {
+            input.placeholder = `Ketik pesan untuk #${name}...`;
+            input.disabled = false;
+            input.focus();
+        }
+        if (sendBtn) {
+            sendBtn.disabled = false;
+        }
+
+        ws?.send(JSON.stringify({ type: "GET_MESSAGES", channelId }));
+    }
+
+    function renderMessages(messages: any[]) {
+        const container = document.getElementById("messages-container");
+        if (!container) return;
+        container.innerHTML = messages
+            .map((m) => createMessageHTML(m))
+            .join("");
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function addMessage(msg: any) {
+        if (msg.channelId !== currentChannelId) return;
+        const container = document.getElementById("messages-container");
+        if (!container) return;
+        container.insertAdjacentHTML("beforeend", createMessageHTML(msg));
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function createMessageHTML(m: any) {
+        const time = new Date(m.timestamp).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+        const attachments =
+            m.attachments
+                ?.map((a: any) => {
+                    if (a.contentType?.startsWith("image")) {
+                        return `<img src="${a.url}" class="msg-image" alt="${a.name}"/>`;
+                    }
+                    return `<a href="${a.url}" class="msg-file" target="_blank">📎 ${a.name}</a>`;
+                })
+                .join("") || "";
+
+        return `
+			<div class="message ${m.author.bot ? "bot-message" : ""}">
+				<img src="${m.author.avatar}" class="msg-avatar" alt="${m.author.username}"/>
+				<div class="msg-content">
+					<div class="msg-header">
+						<span class="msg-author">${m.author.displayName}</span>
+						${m.author.bot ? '<span class="bot-tag">BOT</span>' : ""}
+						<span class="msg-time">${time}</span>
+					</div>
+					<div class="msg-text">${formatContent(m.content)}</div>
+					${attachments ? `<div class="msg-attachments">${attachments}</div>` : ""}
+				</div>
+			</div>
+		`;
+    }
+
+    function formatContent(text: string) {
+        if (!text) return "";
+        return text
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+            .replace(/\*(.+?)\*/g, "<em>$1</em>")
+            .replace(/`(.+?)`/g, "<code>$1</code>")
+            .replace(
+                /(https?:\/\/[^\s]+)/g,
+                '<a href="$1" target="_blank">$1</a>',
+            );
+    }
+
+    function renderRoles() {
+        const container = document.getElementById("roles-section");
+        if (!container) return;
+        container.innerHTML =
+            "<h4>Roles</h4>" +
+            roles
+                .map(
+                    (r) =>
+                        `<button class="mention-item role" data-id="${r.id}" style="color:${r.color}">@${r.name}</button>`,
+                )
+                .join("");
+    }
+
+    function renderMembers(data: any) {
+        const container = document.getElementById("members-list");
+        if (!container) return;
+
+        let html =
+            '<div class="member-group"><h4>Members — ' +
+            data.members.length +
+            "</h4>";
+        html += data.members
+            .slice(0, 50)
+            .map(
+                (m: any) => `
+			<div class="member-item" data-id="${m.id}" data-name="${m.displayName}">
+				<img src="${m.avatar}" class="member-avatar"/>
+				<span class="member-name">${m.displayName}</span>
+			</div>
+		`,
+            )
+            .join("");
+        html += "</div>";
+
+        if (data.bots?.length) {
+            html +=
+                '<div class="member-group"><h4>Bots — ' +
+                data.bots.length +
+                "</h4>";
+            html += data.bots
+                .map(
+                    (b: any) => `
+				<div class="member-item bot" data-id="${b.id}" data-name="${b.displayName}">
+					<img src="${b.avatar}" class="member-avatar"/>
+					<span class="member-name">${b.displayName}</span>
+					<span class="bot-badge">BOT</span>
+				</div>
+			`,
+                )
+                .join("");
+            html += "</div>";
+        }
+
+        container.innerHTML = html;
+
+        // Add click event to mention users
+        container.querySelectorAll(".member-item").forEach((el) => {
+            el.addEventListener("click", () => {
+                const userId = (el as HTMLElement).dataset.id;
+                insertMention(`<@${userId}>`);
+            });
+        });
+    }
+
+    function updateBotInfo(data: any) {
+        const avatar = document.getElementById("bot-avatar");
+        const name = document.getElementById("bot-name");
+        if (avatar) avatar.style.backgroundImage = `url(${data.avatar})`;
+        if (name) name.textContent = data.username;
+    }
+
+    // Show notification
+    function showNotification(
+        message: string,
+        type: "success" | "error" = "success",
+    ) {
+        const existing = document.querySelector(".notification");
+        if (existing) existing.remove();
+
+        const notification = document.createElement("div");
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 8px;
+            background: ${type === "success" ? "#43b581" : "#f04747"};
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+        `;
+        document.body.appendChild(notification);
+
+        setTimeout(() => notification.remove(), 3000);
+    }
+
+    // Image upload handling
+    let selectedImage: string | null = null;
+    let selectedImageName: string | null = null;
+
+    const fileInput = document.getElementById("file-input") as HTMLInputElement;
+    const attachBtn = document.getElementById("attach-btn");
+    const imagePreviewContainer = document.getElementById(
+        "image-preview-container",
+    );
+    const imagePreview = document.getElementById(
+        "image-preview",
+    ) as HTMLImageElement;
+    const imageName = document.getElementById("image-name");
+    const removeImageBtn = document.getElementById("remove-image-btn");
+
+    attachBtn?.addEventListener("click", () => {
+        if (currentChannelId) {
+            fileInput?.click();
+        } else {
+            showNotification("Pilih channel terlebih dahulu!", "error");
+        }
+    });
+
+    fileInput?.addEventListener("change", (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) {
+            if (!file.type.startsWith("image/")) {
+                showNotification("Hanya file gambar yang diizinkan!", "error");
+                return;
+            }
+
+            if (file.size > 8 * 1024 * 1024) {
+                showNotification("Ukuran file maksimal 8MB!", "error");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                selectedImage = event.target?.result as string;
+                selectedImageName = file.name;
+
+                if (imagePreview) imagePreview.src = selectedImage;
+                if (imageName) imageName.textContent = file.name;
+                imagePreviewContainer?.classList.remove("hidden");
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    removeImageBtn?.addEventListener("click", () => {
+        selectedImage = null;
+        selectedImageName = null;
+        if (fileInput) fileInput.value = "";
+        imagePreviewContainer?.classList.add("hidden");
+    });
+
+    // Send message function
+    function sendMessage() {
+        const input = document.getElementById(
+            "message-input",
+        ) as HTMLInputElement;
+        const content = input?.value.trim() || "";
+
+        if (!currentChannelId) return;
+        if (!content && !selectedImage) return;
+
+        console.log(
+            "📤 Sending message:",
+            content,
+            "has image:",
+            !!selectedImage,
+        );
+
+        const messageData: any = {
+            type: "SEND_MESSAGE",
+            channelId: currentChannelId,
+            content: content,
+        };
+
+        if (selectedImage) {
+            messageData.imageData = selectedImage;
+            messageData.imageName = selectedImageName;
+        }
+
+        ws?.send(JSON.stringify(messageData));
+
+        // Clear input and image
+        if (input) input.value = "";
+        selectedImage = null;
+        selectedImageName = null;
+        if (fileInput) fileInput.value = "";
+        imagePreviewContainer?.classList.add("hidden");
+        input?.focus();
+    }
+
+    // Send message on Enter key
+    const input = document.getElementById("message-input") as HTMLInputElement;
+    input?.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    // Send message on button click
+    const sendBtn = document.getElementById("send-btn");
+    sendBtn?.addEventListener("click", () => {
+        sendMessage();
+    });
+
+    // Mention popup
+    const mentionBtn = document.getElementById("mention-btn");
+    const mentionPopup = document.getElementById("mention-popup");
+
+    mentionBtn?.addEventListener("click", () => {
+        // Update users list in popup
+        const usersSection = document.getElementById("users-section");
+        if (usersSection && members.length > 0) {
+            usersSection.innerHTML =
+                "<h4>Users</h4>" +
+                members
+                    .slice(0, 20)
+                    .map(
+                        (m: any) =>
+                            `<button class="mention-item user" data-id="${m.id}">@${m.displayName}</button>`,
+                    )
+                    .join("");
+        }
+        mentionPopup?.classList.toggle("hidden");
+    });
+
+    mentionPopup?.addEventListener("click", (e) => {
+        const target = e.target as HTMLElement;
+        if (target.classList.contains("everyone")) {
+            insertMention("@everyone");
+        } else if (target.classList.contains("here")) {
+            insertMention("@here");
+        } else if (target.classList.contains("role")) {
+            insertMention(`<@&${target.dataset.id}>`);
+        } else if (target.classList.contains("user")) {
+            insertMention(`<@${target.dataset.id}>`);
+        }
+        mentionPopup?.classList.add("hidden");
+    });
+
+    function insertMention(text: string) {
+        const input = document.getElementById(
+            "message-input",
+        ) as HTMLInputElement;
+        if (!input) return;
+        input.value += text + " ";
+        input.focus();
+    }
+
+    // Logout function
+    function logout() {
+        localStorage.removeItem("mio_auth");
+        window.location.href = "/";
+    }
+
+    // Logout buttons
+    document.getElementById("logout-btn")?.addEventListener("click", logout);
+    document
+        .getElementById("header-logout-btn")
+        ?.addEventListener("click", logout);
+
+    // Start connection
+    connect();
+</script>
+
+<style is:global>
+    @import "../styles/dashboard.css";
+</style>

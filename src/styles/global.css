@@ -1,0 +1,320 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Mio Theme Colors - Purple/Deep Blue Musical */
+  --background-primary: #1a1625;
+  --background-secondary: #231e2e;
+  --background-tertiary: #13101a;
+  --background-accent: #2d2640;
+  --background-floating: #0f0c14;
+  --background-modifier-hover: rgba(139, 92, 246, 0.1);
+  --background-modifier-active: rgba(139, 92, 246, 0.2);
+  --channel-textarea-background: #2d2640;
+
+  /* Mio Purple Theme */
+  --brand: #8b5cf6;
+  --brand-hover: #7c3aed;
+  --brand-light: #a78bfa;
+  --brand-dark: #6d28d9;
+
+  /* Accent Colors */
+  --accent-pink: #ec4899;
+  --accent-blue: #3b82f6;
+  --accent-cyan: #06b6d4;
+  --accent-rose: #f43f5e;
+
+  /* Text Colors */
+  --text-normal: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-link: #a78bfa;
+  --text-positive: #34d399;
+  --text-danger: #f87171;
+  --text-warning: #fbbf24;
+
+  /* Interactive */
+  --interactive-normal: #94a3b8;
+  --interactive-hover: #e2e8f0;
+  --interactive-active: #ffffff;
+
+  /* Status Colors */
+  --status-online: #22c55e;
+  --status-idle: #f59e0b;
+  --status-dnd: #ef4444;
+  --status-offline: #6b7280;
+
+  --input-background: #13101a;
+  --scrollbar-thin-thumb: #4c1d95;
+  --scrollbar-auto-thumb: #5b21b6;
+
+  --font-primary: 'Outfit', 'Segoe UI', sans-serif;
+  --font-display: 'Outfit', 'Segoe UI', sans-serif;
+
+  /* Shadows */
+  --shadow-elevation-low: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-elevation-medium: 0 4px 8px rgba(0, 0, 0, 0.4);
+  --shadow-elevation-high: 0 8px 16px rgba(0, 0, 0, 0.5);
+
+  /* Borders */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--background-primary);
+  color: var(--text-normal);
+  font-family: var(--font-primary);
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-tertiary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thin-thumb);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-auto-thumb);
+}
+
+/* Buttons */
+button {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+input,
+textarea {
+  font-family: inherit;
+  border: none;
+  outline: none;
+}
+
+/* Links */
+a {
+  color: var(--text-link);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--brand);
+  text-decoration: underline;
+}
+
+/* Selection */
+::selection {
+  background: var(--brand);
+  color: white;
+}
+
+/* Focus Visible */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 5px var(--brand), 0 0 10px var(--brand);
+  }
+
+  50% {
+    box-shadow: 0 0 20px var(--brand), 0 0 30px var(--brand);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes musicNote {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-50px) rotate(20deg);
+  }
+}
+
+/* Utility Classes */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s ease;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+.animate-glow {
+  animation: glow 2s infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Musical Notes Decoration */
+.music-note {
+  position: absolute;
+  font-size: 24px;
+  color: var(--brand-light);
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Glass Effect */
+.glass {
+  background: rgba(35, 30, 46, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--brand) 0%, var(--accent-pink) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Badge Styles */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-bot {
+  background: var(--brand);
+  color: white;
+}
+
+.badge-online {
+  background: var(--status-online);
+  color: white;
+}
+
+/* Tooltip */
+.tooltip {
+  position: relative;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  background: var(--background-floating);
+  color: var(--text-normal);
+  font-size: 13px;
+  border-radius: var(--border-radius-md);
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.tooltip:hover::after {
+  opacity: 1;
+  visibility: visible;
+  bottom: calc(100% + 8px);
+}
