@@ -4,11 +4,21 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
+    "dev:all": "concurrently \"astro dev\" \"tsx server.ts\"",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "start": "tsx server.ts"
   },
   "dependencies": {
-    "astro": "^5.17.1"
+    "@astrojs/node": "^9.5.2",
+    "@types/express": "^5.0.6",
+    "@types/ws": "^8.18.1",
+    "astro": "^5.17.1",
+    "discord.js": "^14.25.1",
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1",
+    "tsx": "^4.21.0",
+    "ws": "^8.19.0"
   }
 }
